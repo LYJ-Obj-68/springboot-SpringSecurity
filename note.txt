@@ -1,0 +1,43 @@
+注意：在创建SpringBoot项目时，Application.java在文件夹中的位置，
+    这个类是启动入口，其他的类都需要从这个类进行扫描，因此，最好将这个类放在最外层；
+    若放在里面，没有扫描到的包，需要手动设置加入；
+    @ComponentScan(basePackages="需引入的包路径")
+    引入多个包：
+    @ComponentScan(basePackages={"com.lxj","com.ht"})
+
+    如果位置没有放正确，很可能报404错误，spring无法扫描到每个层次，断点调试也没用
+
+    提示:在这里遇到的问题就是:由于粗心，在service层的MyInvocationSecurityMetadataSourceService的类上没有加注解@Service
+        无法正常启动服务；还有个问题就是，引入dao层的时候，将包名写错了(还没提示)，
+        (折腾了一天半，到处找资料，百度；很庆幸没放弃；看了一些资料后，感觉对springboot更熟悉点了，加深了原理；
+        总之，写代码的时候一定要仔细，遇到问题一定要沉住气，根据提示一点一点研究，看究竟是那个地方出的错)
+
+由于是采用全注解开发，所以，注意需要注解的细节：
+Dao层：@Repository
+Service实现类层（不是接口）：@Service
+Controller层：@Controller
+    【
+        @RestController 与 @Controller是有区别的:
+
+        @RequestMapping("/login")
+        public  String login(){
+            return "login";
+        }
+
+        前者在访问的时候：页面直接是显示 : login
+        后者访问的是：login.html页面
+    】
+
+@ComponentScan：
+    如果不设置basePackage的话 默认会扫描包的所有类，所以最好还是写上basePackage ,减少加载时间。
+    默认扫描**/*.class路径
+    比如这个注解在com.wuhulala 下面 ，那么会扫描这个包下的所有类还有子包的所有类,比如com.wuhulala.service包的应用
+@Configuration：
+    表示这个类中定义了Bean，会把这个类中bean加载到spring容器中
+@EnableAutoConfiguration：
+    springboot的注解 会在你开启某些功能的时候自动配置，这个注解告诉Spring Boot根据添加的jar依赖猜测你想如何配置Spring。
+    由于spring-boot-starter-web添加了Tomcat和Spring MVC，所以auto-configuration将假定你正在开发一个web应用，并对Spring进行相应地设置。
+@EnableAutoConfiguration：
+    注解通常会放在 main class上, 这为特定的东西隐式的定义了一个基础的“search package”.
+    比如, 如果你在写一个 JPA application, 有使用了@EnableAutoConfiguration 注解的class的包会去查找 @Entity 的items.
+
